@@ -42,7 +42,15 @@ services:
 
       ADMIN_EMAIL: "admin@example.com"
       ADMIN_PASSWORD: "d1r3ctu5"
-
+  
+  logic:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./data/logic:./logic
+    network_mode: service:db
+    command: sleep infinity
       # Make sure to set this in production
       # (see https://docs.directus.io/self-hosted/config-options#general)
       # PUBLIC_URL: "https://directus.example.com"
