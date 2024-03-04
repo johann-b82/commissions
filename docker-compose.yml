@@ -6,6 +6,7 @@ services:
     # platform: linux/amd64
     volumes:
       - ./data/database:/var/lib/postgresql/data
+    restart: unless-stopped
     environment:
       POSTGRES_USER: "directus"
       POSTGRES_PASSWORD: "directus"
@@ -13,15 +14,17 @@ services:
 
   cache:
     image: redis:6
+    restart: unless-stopped
 
   directus:
-    image: directus/directus:10.9.3
+    image: directus/directus:10.9.2
     ports:
       - 8055:8055
     volumes:
       - ./uploads:/directus/uploads
       # If you want to load extensions from the host
-      # - ./extensions:/directus/extensions
+      - ./extensions:/directus/extensions
+    restart: unless-stopped
     depends_on:
       - cache
       - database
@@ -42,15 +45,7 @@ services:
 
       ADMIN_EMAIL: "admin@example.com"
       ADMIN_PASSWORD: "d1r3ctu5"
-  
-  logic:
-    build: 
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - ./data/logic:./logic
-    network_mode: service:db
-    command: sleep infinity
+
       # Make sure to set this in production
       # (see https://docs.directus.io/self-hosted/config-options#general)
       # PUBLIC_URL: "https://directus.example.com"
